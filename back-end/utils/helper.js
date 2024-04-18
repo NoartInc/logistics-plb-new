@@ -5,7 +5,7 @@ const getImage = (req, file) => {
     const { originalname } = file;
     //const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     const currentTime = moment().format("YYYYMMDDHHmmss");
-    const uniqueSuffix = `${req?.body?.suratJalan}-${currentTime}`;
+    const uniqueSuffix = `${req?.body?.suratJalan?.replace(/\t/g, '')}-${currentTime}`;
     let fileExtension = originalname.split(".").pop();
     let fileData = `${uniqueSuffix}.${fileExtension}`;
     return fileData;
