@@ -123,7 +123,12 @@ exports.findAllPengiriman = async (req, res) => {
     };
 
     if (role === "driver") {
-      conditions = { driver: userId };
+      conditions = {
+        driver: userId,
+        status: {
+          [Op.ne]: "terkirim",
+        },
+      };
     } else if (role === "sales") {
       conditions = { "$customers.sales$": userId };
     }

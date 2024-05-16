@@ -130,7 +130,7 @@ function ListPengiriman() {
       {
         Header: "Customer",
         accessor: "customers.customer",
-        Cell: (data) => <span>{data?.row?.original?.customers?.customer}</span>,
+        Cell: (data) => user?.role !== "driver" ? <span>{data?.row?.original?.customers?.customer}</span> : "-",
       },
       {
         Header: "Sales",
