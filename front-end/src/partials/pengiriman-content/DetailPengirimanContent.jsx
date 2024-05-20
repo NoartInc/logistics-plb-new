@@ -7,6 +7,7 @@ import _ from "lodash";
 import IconUpdatePengiriman from '../../images/IconUpdatePengiriman';
 import { serverImagePath } from "../../utils/Utils";
 import PengirimanInformasiForm from "./PengirimanInformasiForm";
+import { userData } from "../../utils/constants";
 
 function HistoryItem({ proses_by, status, image, createdAt, note, produksi_by }) {
   return (
@@ -44,6 +45,7 @@ function DetailPengirimanContent() {
   const navigate = useNavigate();
   const [currentData, setCurrentData] = React.useState(null);
   const [teliList, setTeliList] = React.useState("");
+  const { user } = userData;
 
   const getCurrentData = () => {
 
@@ -148,12 +150,14 @@ function DetailPengirimanContent() {
                   {currentData?.createdAt}
                 </span>
               </p> */}
-              <p className="mt-1 text-sm font-medium text-gray-700">
-                Customer :
-                <span className="ml-1 text-sm text-gray-500">
-                  {currentData?.customers?.customer}
-                </span>
-              </p>
+              {user?.role !== "driver" && (
+                <p className="mt-1 text-sm font-medium text-gray-700">
+                  Customer :
+                  <span className="ml-1 text-sm text-gray-500">
+                    {currentData?.customers?.customer}
+                  </span>
+                </p>
+              )}
               <p className="mt-1 text-sm font-medium text-gray-700">
                 Sales :
                 <span className="ml-1 text-sm text-gray-500">

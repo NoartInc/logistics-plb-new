@@ -125,9 +125,18 @@ exports.findAllPengiriman = async (req, res) => {
     if (role === "driver") {
       conditions = {
         driver: userId,
-        status: {
-          [Op.ne]: "terkirim",
-        },
+        [Op.and]: [
+          {
+            status: {
+              [Op.ne]: "terkirim",
+            },
+          },
+          {
+            status: {
+              [Op.ne]: "pending",
+            },
+          },
+        ],
       };
     } else if (role === "sales") {
       conditions = { "$customers.sales$": userId };
