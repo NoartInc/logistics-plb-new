@@ -3,6 +3,7 @@ import FilterIcon from '../../icons/FilterIcon';
 import CloseIcon from '../../icons/CloseIcon';
 import { useSelector } from 'react-redux'
 import CheckboxButton from '../../components/CheckboxButton';
+import { userData } from '../../utils/constants';
 
 const status = ["diproses", "dicetak", "dimuat", "termuat", "dikirim", "terkirim", "pending", "cancel"];
 const initFilters = {
@@ -17,6 +18,7 @@ const PengirimanModalFilter = ({ applyFilter = () => null }) => {
     const { filters: storedFilter } = useSelector(state => state?.pengirimans);
     const gradings = useSelector(state => state?.gradings?.list);
     const [filters, setFilters] = React.useState({ ...initFilters });
+    const { user } = userData;
 
     const submitFilter = () => {
         setShowModal(false);
@@ -63,13 +65,15 @@ const PengirimanModalFilter = ({ applyFilter = () => null }) => {
 
     return (
         <>
-            <button
-                type="button"
-                onClick={() => setShowModal(true)}
-                className="inline-block px-4 py-2 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-            >
-                <FilterIcon />
-            </button>
+            {user?.role !== "driver" && (
+                <button
+                    type="button"
+                    onClick={() => setShowModal(true)}
+                    className="inline-block px-4 py-2 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+                >
+                    <FilterIcon />
+                </button>
+            )}
             {showModal ? (
                 <>
                     <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
