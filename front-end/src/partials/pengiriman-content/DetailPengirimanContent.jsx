@@ -67,6 +67,29 @@ function DetailPengirimanContent() {
     setTeliList(telies);
   }
 
+  const hitungDurasiMuat = () => {
+    const startTime = currentData?.history?.find(item => item?.status === "dimuat")?.createdAt;
+    const endTime = currentData?.history?.find(item => item?.status === "termuat")?.createdAt;
+
+    if (startTime && endTime) {
+      const duration = moment.duration(moment(endTime).diff(moment(startTime)));
+
+      const days = duration.days();
+      const hours = duration.hours();
+      const minutes = duration.minutes();
+
+      let result = "";
+      if (days > 0) result += `${days} hari `;
+      if (hours > 0) result += `${hours} jam `;
+      if (minutes > 0) result += `${minutes} menit`;
+
+      return result.trim() || "0 menit";
+    } else {
+      return "-";
+    }
+  };
+
+
   React.useEffect(() => {
     getCurrentData();
   }, [id]);
@@ -188,6 +211,12 @@ function DetailPengirimanContent() {
                   {currentData?.drivers?.contact}
                 </span>
               </p>
+              <p className="mt-1 text-sm font-medium text-gray-700">
+                Durasi Muat :
+                <span className="ml-1 text-sm font-bold text-gray-500">
+                  {hitungDurasiMuat()}
+                </span>
+              </p>
             </div>
           </div>
           <div className="p-4 border-2 rounded-xl">
@@ -196,7 +225,7 @@ function DetailPengirimanContent() {
         </div>
         {/* <div className="mt-5 md:mt-0 md:col-span-4"> */}
         <ol className="relative border-l border-gray-200 ml-10">
-          {currentData?.history?.map((history, index) => (
+          {_.orderBy(currentData?.history, ['createdAt'], ['asc'])?.map((history, index) => (
             <HistoryItem key={index} {...history} />
           ))}
           {/* <li className="mb-6 ml-6">
