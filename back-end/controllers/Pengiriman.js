@@ -516,8 +516,6 @@ exports.downloadData = async (req, res) => {
     )?.createdAt ?? "-";
     const durasiKirim = waktuDikirim && waktuTerkirim ? hitungDurasi(waktuDikirim, waktuTerkirim) : "-";
 
-    console.log({ waktuDikirim, waktuTerkirim });
-
     data.push({
       createdAt: item.createdAt,
       suratJalan: item.suratJalan || "",
