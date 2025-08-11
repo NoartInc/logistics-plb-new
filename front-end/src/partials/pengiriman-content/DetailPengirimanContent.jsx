@@ -90,6 +90,8 @@ function DetailPengirimanContent() {
       if (hours > 0) result += `${hours} jam `;
       if (minutes > 0) result += `${minutes} menit`;
 
+      console.log({ duration, result });
+
       return result.trim() || "0 menit";
     } else {
       return "-";
