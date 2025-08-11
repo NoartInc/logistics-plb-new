@@ -16,6 +16,7 @@ const { Op, Sequelize } = require("sequelize");
 const moment = require("moment");
 const { getImage, progressDuration, getGradingData, getTerkirimDay } = require("../utils/helper");
 const logging = require("../utils/logging");
+const _ = require("lodash");
 
 const dataAssoc = [
   {
@@ -500,10 +501,11 @@ exports.downloadData = async (req, res) => {
       )
     );
 
-    const waktuDimuat = item?.history?.find(
+    const sortedItemHistory = _.orderBy(item?.history || [], ['createdAt'], ['desc']);
+    const waktuDimuat = sortedItemHistory?.find(
       (item) => item?.status === "dimuat"
     )?.createdAt ?? "-";
-    const waktuTermuat = item?.history?.find(
+    const waktuTermuat = sortedItemHistory?.find(
       (item) => item?.status === "termuat"
     )?.createdAt ?? "-";
     const durasiMuat = waktuDimuat && waktuTermuat ? hitungDurasi(waktuDimuat, waktuTermuat) : "-";
