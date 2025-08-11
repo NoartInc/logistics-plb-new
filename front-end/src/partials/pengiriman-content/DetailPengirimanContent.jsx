@@ -71,6 +71,13 @@ function DetailPengirimanContent() {
     const startTime = currentData?.history?.find(item => item?.status === "dimuat")?.createdAt;
     const endTime = currentData?.history?.find(item => item?.status === "termuat")?.createdAt;
 
+    console.log({
+      startTime, endTime,
+      dimuat: currentData?.history?.find(item => item?.status === "dimuat")?.createdAt,
+      termuat: currentData?.history?.find(item => item?.status === "termuat")?.createdAt,
+      history: currentData?.history
+    })
+
     if (startTime && endTime) {
       const duration = moment.duration(moment(endTime).diff(moment(startTime)));
 
