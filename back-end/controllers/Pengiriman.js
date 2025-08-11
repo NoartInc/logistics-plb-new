@@ -486,10 +486,10 @@ exports.downloadData = async (req, res) => {
   };
 
   pengiriman.forEach((item) => {
-    const telis = item?.history
-      .flatMap((entry) => entry.teli)
-      .find((item) => item.teliPerson !== null);
-    const teliPersons = telis ? telis.teliPerson.fullName : "";
+    const telis = item?.history?.find(item => item.status === "dimuat")?.teli.map(item => {
+      return item?.teliPerson?.fullName
+    }).join(",");
+    const teliPersons = telis;
     const gradingData = getGradingData(
       gradings,
       getTerkirimDay(
@@ -534,10 +534,16 @@ exports.downloadData = async (req, res) => {
       updatedAt: item.updatedAt,
       informasi: item?.informasi || "",
       tanggalOrder: item?.tanggalOrder
-        ? moment(item?.tanggalOrder).format("DD/MM/YYYY HH:mm")
+        ? moment(item?.tanggalOrder).format("DD/MM/YYYY")
         : "-",
-      tanggalDikirim: waktuDikirim !== "-" ? moment(waktuDikirim).format("DD/MM/YYYY HH:mm") : "-",
-      tanggalTerkirim: waktuTerkirim !== "-" ? moment(waktuTerkirim).format("DD/MM/YYYY HH:mm") : "-",
+      tanggalDikirim:
+        waktuDikirim !== "-"
+          ? moment(waktuDikirim).tz("Asia/Jakarta").format("DD/MM/YYYY HH:mm")
+          : "-",
+      tanggalTerkirim:
+        waktuTerkirim !== "-"
+          ? moment(waktuTerkirim).tz("Asia/Jakarta").format("DD/MM/YYYY HH:mm")
+          : "-",
       durasiKirim: durasiKirim,
       // progressTime: item?.tanggalOrder || item?.tanggalKirim ? progressDuration(item?.tanggalOrder, item?.tanggalKirim ? item?.tanggalKirim : "now") : "-",
       progressTime: item?.exclude
@@ -547,8 +553,14 @@ exports.downloadData = async (req, res) => {
         : `${gradingData?.gradeName} ${
             gradingData?.gradePoin == "0" ? "(Expired)" : ""
           }`,
-      tanggalDimuat: waktuDimuat !== "-" ? moment(waktuDimuat).format("DD/MM/YYYY HH:mm") : "-",
-      tanggalTermuat: waktuTermuat !== "-" ? moment(waktuTermuat).format("DD/MM/YYYY HH:mm") : "-",
+      tanggalDimuat:
+        waktuDimuat !== "-"
+          ? moment(waktuDimuat).tz("Asia/Jakarta").format("DD/MM/YYYY HH:mm")
+          : "-",
+      tanggalTermuat:
+        waktuTermuat !== "-"
+          ? moment(waktuTermuat).tz("Asia/Jakarta").format("DD/MM/YYYY HH:mm")
+          : "-",
       durasiMuat: durasiMuat,
     });
   });
