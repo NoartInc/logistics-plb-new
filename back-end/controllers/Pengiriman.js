@@ -19,6 +19,19 @@ const { getImage, progressDuration, getGradingData, getTerkirimDay } = require("
 const logging = require("../utils/logging");
 const _ = require("lodash");
 
+const statusLabel = {
+  kosong: "-",
+  diproses: "DIPROSES",
+  dicetak: "DICETAK",
+  dimuat: "DIMUAT",
+  termuat: "TERMUAT",
+  dikirim: "DIKIRIM",
+  terkirim: "TERKIRIM",
+  return_to_warehouse: "PULANG KE GUDANG",
+  pending: "PENDING",
+  cancel: "CANCEL",
+};
+
 const dataAssoc = [
   {
     model: Customer,
@@ -524,12 +537,19 @@ exports.downloadData = async (req, res) => {
     const waktuTerkirim = item?.history?.find(
       (item) => item?.status === "terkirim"
     )?.createdAt ?? "-";
+    const waktuDipulangkan =
+      item?.history?.find((item) => item?.status === "return_to_warehouse")
+        ?.createdAt ?? "-";
     const durasiKirim = waktuDikirim && waktuTerkirim ? hitungDurasi(waktuDikirim, waktuTerkirim) : "-";
+    const durasiPulang =
+      waktuDikirim && waktuDipulangkan
+        ? hitungDurasi(waktuDikirim, waktuDipulangkan)
+        : "-";
 
     data.push({
       createdAt: item.createdAt,
       suratJalan: item.suratJalan || "",
-      status: item.status || "",
+      status: (statusLabel[item.status || "kosong"] || "-").toLowerCase(),
       customers: item.customers?.customer,
       tonase: item.tonase || "",
       pengangkutan: item.pengangkutans?.pengangkutan || "",
@@ -555,15 +575,22 @@ exports.downloadData = async (req, res) => {
         waktuTerkirim !== "-"
           ? moment(waktuTerkirim).tz("Asia/Jakarta").format("DD/MM/YYYY HH:mm")
           : "-",
+      tanggalDipulangkan:
+        waktuDipulangkan !== "-"
+          ? moment(waktuDipulangkan)
+              .tz("Asia/Jakarta")
+              .format("DD/MM/YYYY HH:mm")
+          : "-",
       durasiKirim: durasiKirim,
+      durasiPulang: durasiPulang,
       // progressTime: item?.tanggalOrder || item?.tanggalKirim ? progressDuration(item?.tanggalOrder, item?.tanggalKirim ? item?.tanggalKirim : "now") : "-",
       progressTime: item?.exclude
         ? "Exclude"
         : gradingData == "-"
-        ? "Expired"
-        : `${gradingData?.gradeName} ${
-            gradingData?.gradePoin == "0" ? "(Expired)" : ""
-          }`,
+          ? "Expired"
+          : `${gradingData?.gradeName} ${
+              gradingData?.gradePoin == "0" ? "(Expired)" : ""
+            }`,
       tanggalDimuat:
         waktuDimuat !== "-"
           ? moment(waktuDimuat).tz("Asia/Jakarta").format("DD/MM/YYYY HH:mm")
@@ -675,6 +702,16 @@ exports.downloadData = async (req, res) => {
     {
       header: "Durasi Pengiriman",
       key: "durasiKirim",
+      width: "24",
+    },
+    {
+      header: "Tanggal Dipulangkan",
+      key: "tanggalDipulangkan",
+      width: "18",
+    },
+    {
+      header: "Durasi Pulang",
+      key: "durasiPulang",
       width: "24",
     },
     {

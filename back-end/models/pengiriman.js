@@ -65,50 +65,61 @@ module.exports = (sequelize, DataTypes) => {
       })
     }
   }
-  Pengiriman.init({
-    customer: DataTypes.INTEGER,
-    suratJalan: DataTypes.STRING,
-    pengangkutan: DataTypes.INTEGER,
-    address: DataTypes.TEXT,
-    tonase: DataTypes.DOUBLE,
-    produksiId: DataTypes.INTEGER,
-    driver: DataTypes.INTEGER,
-    kendaraan: DataTypes.INTEGER,
-    helper: DataTypes.INTEGER,
-    sales: DataTypes.INTEGER,
-    user: DataTypes.INTEGER,
-    note: DataTypes.STRING,
-    image: DataTypes.STRING,
-    gudang:
+  Pengiriman.init(
     {
-      type: DataTypes.ENUM('stok', 'custom'),
-      default: 'custom'
-    }, 
-    tanggalOrder: DataTypes.DATE,
-    tanggalKirim: DataTypes.DATE,
-    informasi: DataTypes.TEXT,
-    exclude: DataTypes.BOOLEAN,
-    status: 
-    { 
-      type: DataTypes.ENUM('diproses', 'dimuat', 'termuat', 'dikirim', 'terkirim', 'pending', 'cancel'),
-      default:'diproses'
+      customer: DataTypes.INTEGER,
+      suratJalan: DataTypes.STRING,
+      pengangkutan: DataTypes.INTEGER,
+      address: DataTypes.TEXT,
+      tonase: DataTypes.DOUBLE,
+      produksiId: DataTypes.INTEGER,
+      driver: DataTypes.INTEGER,
+      kendaraan: DataTypes.INTEGER,
+      helper: DataTypes.INTEGER,
+      sales: DataTypes.INTEGER,
+      user: DataTypes.INTEGER,
+      note: DataTypes.STRING,
+      image: DataTypes.STRING,
+      gudang: {
+        type: DataTypes.ENUM("stok", "custom"),
+        default: "custom",
+      },
+      tanggalOrder: DataTypes.DATE,
+      tanggalKirim: DataTypes.DATE,
+      informasi: DataTypes.TEXT,
+      exclude: DataTypes.BOOLEAN,
+      status: {
+        type: DataTypes.ENUM(
+          "diproses",
+          "dimuat",
+          "termuat",
+          "dikirim",
+          "terkirim",
+          "return_to_warehouse",
+          "pending",
+          "cancel",
+        ),
+        default: "diproses",
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        get() {
+          return moment(this.getDataValue("createdAt")).format("DD/MM/YYYY");
+        },
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        get() {
+          return moment(this.getDataValue("updatedAt")).format(
+            "DD/MM/YYYY HH:mm:ss",
+          );
+        },
+      },
     },
-    createdAt: {
-      type: DataTypes.DATE,
-      get() {
-        return moment(this.getDataValue('createdAt')).format('DD/MM/YYYY');
-      }
+    {
+      sequelize,
+      modelName: "Pengiriman",
     },
-    updatedAt: {
-      type: DataTypes.DATE,
-      get() {
-        return moment(this.getDataValue('updatedAt')).format('DD/MM/YYYY HH:mm:ss');
-      }
-    }
-
-  }, {
-    sequelize,
-    modelName: 'Pengiriman',
-  });
+  );
   return Pengiriman;
 };
